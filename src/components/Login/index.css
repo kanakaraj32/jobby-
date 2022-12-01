@@ -1,0 +1,24 @@
+.con {
+  background-color: #000000;
+  background-size: cover;
+  height: 100vh;
+  padding: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.container {
+  background-color: #272727;
+  height: 60vh;
+  width: 40vw;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  align-items: center;
+  justify-content: center;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+}
