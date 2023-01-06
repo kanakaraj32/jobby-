@@ -1,16 +1,19 @@
 import {Component} from 'react'
 
+import Cookies from 'js-cookie'
 import './index.css'
 
 class Login extends Component {
-  state = {username: '', password: ''}
+  state = {username: '', password: '', error: '', istrue: false}
 
-  submit = props => {
-    const {history} = props
-    history.push('/')
+  sucess = jwtToken => {
+    Cookies.set('jwt_token', jwtToken, {expires: 30})
+    const {history} = this.props
+    history.replace('/')
   }
 
   error = error => {
+    this.setState({error, istrue: true})
     console.log(error)
   }
 
@@ -33,10 +36,17 @@ class Login extends Component {
     }
     const response = await fetch(url, option)
     const data = await response.json()
-    console.log(response)
+    if (response.ok === true) {
+      this.sucess(data.jwt_token)
+    } else {
+      this.error(data.error_msg)
+    }
+
+    console.log(data)
   }
 
   render() {
+    const {istrue, error} = this.state
     return (
       <div className="con">
         <div className="container">
@@ -53,8 +63,9 @@ class Login extends Component {
               <label htmlFor="password">Password</label>
               <input type="password" id="password" onChange={this.pass} />
             </div>
+            <button type="submit">Login</button>
+            {istrue && <p>{error}</p>}
           </form>
-          <button type="submit">Login</button>
         </div>
       </div>
     )
