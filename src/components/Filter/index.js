@@ -9,13 +9,8 @@ const Filterr = props => {
 
   return (
     <div>
-      <li>
-        <input
-          onChange={change}
-          type="checkbox"
-          id={employmentTypeId}
-          value={employmentTypeId}
-        />
+      <li onChange={change}>
+        <input type="checkbox" id={employmentTypeId} value={employmentTypeId} />
         <label className="head" htmlFor={employmentTypeId}>
           {label}
         </label>

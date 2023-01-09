@@ -6,6 +6,7 @@ import {BsSearch} from 'react-icons/bs'
 import Header from '../Header'
 import Filterr from '../Filter'
 import Salary from '../Salary'
+import JobCard from '../JobsCard'
 
 import './index.css'
 
@@ -18,18 +19,22 @@ const apiConstans = {
 
 const employmentTypesList = [
   {
+    id: 1,
     label: 'Full Time',
     employmentTypeId: 'FULLTIME',
   },
   {
+    id: 2,
     label: 'Part Time',
     employmentTypeId: 'PARTTIME',
   },
   {
+    id: 3,
     label: 'Freelance',
     employmentTypeId: 'FREELANCE',
   },
   {
+    id: 4,
     label: 'Internship',
     employmentTypeId: 'INTERNSHIP',
   },
@@ -37,18 +42,22 @@ const employmentTypesList = [
 // eslint-disable-next-line
 const salaryRangesList = [
   {
+    id: 1,
     salaryRangeId: '1000000',
     label: '10 LPA and above',
   },
   {
+    id: 2,
     salaryRangeId: '2000000',
     label: '20 LPA and above',
   },
   {
+    id: 3,
     salaryRangeId: '3000000',
     label: '30 LPA and above',
   },
   {
+    id: 4,
     salaryRangeId: '4000000',
     label: '40 LPA and above',
   },
@@ -96,14 +105,14 @@ class Jobs extends Component {
   }
 
   getJobs = async () => {
-    // eslint-disable-next-line
     const {employmentType, minPackage, input} = this.state
     const profileApiUrl = `https://apis.ccbp.in/jobs?employment_type=${employmentType}&minimum_package=${minPackage}&search=${input}`
     const jwtt = Cookies.get('jwt_token')
+
     this.setState({jobStatus: apiConstans.progress})
     const OptionA = {
       method: 'GET',
-      header: {Authorization: `Bearer ${jwtt}`},
+      headers: {Authorization: `Bearer ${jwtt}`},
     }
     const response = await fetch(profileApiUrl, OptionA)
     console.log(response)
@@ -120,8 +129,10 @@ class Jobs extends Component {
         rating: eachJob.rating,
         title: eachJob.title,
       }))
+      console.log(fetchedJobsData)
       this.setState({
         salarydate: fetchedJobsData,
+
         jobStatus: apiConstans.success,
       })
     } else {
@@ -186,6 +197,86 @@ class Jobs extends Component {
     console.log(e.target.value)
   }
 
+  wins = () => {
+    const {salarydate, input} = this.state
+    const jobsDisplay = salarydate.length > 10
+
+    return jobsDisplay ? (
+      <div className="details-container">
+        <ul className="job">
+          {salarydate.map(eachData => (
+            <JobCard key={eachData.id} jobDetails={eachData} />
+          ))}
+        </ul>
+      </div>
+    ) : (
+      <div className="no-jobs-container">
+        <div className="search-input-content">
+          <input
+            type="search"
+            className="search"
+            placeholder="Search"
+            value={input}
+            onChange={this.changeSearchInput}
+            onKeyDown={this.onEnterKey}
+          />
+          <button
+            type="button"
+            className="search-button"
+            onClick={this.getJobDetails}
+          >
+            <BsSearch className="search-icon" />
+          </button>
+        </div>
+        <img
+          src="https://assets.ccbp.in/frontend/react-js/no-jobs-img.png"
+          alt="no jobs"
+          className="no-jobs"
+        />
+        <h1 className="no-jobs-heading">No Jobs Found</h1>
+        <p className="no-jobs-desc">
+          We could not find any jobs. Try other filters.
+        </p>
+      </div>
+    )
+  }
+
+  lose = () => (
+    <div className="failure-container">
+      <img
+        src="https://assets.ccbp.in/frontend/react-js/failure-img.png"
+        alt="failure view"
+        className="failure-view"
+      />
+      <h1 className="failure-heading">Oops! Something Went Wrong</h1>
+      <p className="failure-desc">
+        we cannot seem to find the page you are looking for
+      </p>
+      <button
+        type="button"
+        className="jobs-failure-button"
+        onClick={this.getJobDetails}
+      >
+        Retry
+      </button>
+    </div>
+  )
+
+  showing = () => {
+    const {jobStatus} = this.state
+    switch (jobStatus) {
+      case apiConstans.inProgress:
+        return this.progress()
+      case apiConstans.success:
+        return this.wins()
+      case apiConstans.failure:
+        return this.lose()
+
+      default:
+        return null
+    }
+  }
+
   render() {
     return (
       <div className="jobContainer">
@@ -200,7 +291,7 @@ class Jobs extends Component {
                 {employmentTypesList.map(product => (
                   <Filterr
                     details={product}
-                    key={product.employmentTypeId}
+                    key={product.id}
                     employee={this.employee}
                   />
                 ))}
@@ -213,7 +304,7 @@ class Jobs extends Component {
                 {salaryRangesList.map(product => (
                   <Salary
                     details={product}
-                    key={product.salaryRangeId}
+                    key={product.id}
                     salaryLen={this.salaryLen}
                   />
                 ))}
@@ -231,7 +322,7 @@ class Jobs extends Component {
                 <BsSearch className="search-icon" />
               </button>
             </div>
-            <div>raju</div>
+            <div>{this.showing()}</div>
           </div>
         </div>
       </div>

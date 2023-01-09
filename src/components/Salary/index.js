@@ -9,13 +9,8 @@ const Salary = props => {
   }
   return (
     <div>
-      <li>
-        <input
-          onChange={salary}
-          type="checkbox"
-          id={salaryRangeId}
-          value={salaryRangeId}
-        />
+      <li onChange={salary}>
+        <input type="checkbox" id={salaryRangeId} value={salaryRangeId} />
         <label className="head" htmlFor={salaryRangeId}>
           {label}
         </label>

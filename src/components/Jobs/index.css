@@ -5,6 +5,9 @@
   width: 30%;
   padding-left: 15px;
 }
+.job {
+  list-style-type: none;
+}
 
 .right-jobs {
   width: 80%;
